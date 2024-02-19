@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 int Sum(int a, int b) {
 
     if ((b > 0) and (INT_MAX - b < a)) {
