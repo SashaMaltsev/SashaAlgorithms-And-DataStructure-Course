@@ -34,6 +34,7 @@ public:
         friend class List;
 
     public:
+        // NOLINTNEXTLINE
         using ValueType = T;
         using ReferenceType = value_type&;
         using PointerType = value_type*;
