@@ -1,172 +1,310 @@
 #pragma once
 
-#include <cstdlib>
-#include <cstddef>
-#include <iterator>
-#include <functional>
-#include <utility>
-
 #include <fmt/core.h>
 
+#include <cstddef>
+#include <cstdlib>
+#include <functional>
+#include <iterator>
+#include <utility>
+
+#include "exceptions.hpp"
+
 template <typename T>
-class List{
+class List {
 private:
-  class Node{
-    friend class ListIterator;
-    friend class List;
-    /*???*/
+    class Node {
+        friend class ListIterator;
+        friend class List;
 
     private:
-      /*???*/
+        T data;
+        Node* next;
+        Node* prev;
 
-  };
-
-public:
-  class ListIterator{
     public:
-      using value_type = T;
-      using reference_type = value_type&;
-      using pointer_type = value_type*;
-      using difference_type = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      inline bool operator==(const ListIterator&) const {
-          std::abort(); // Not implemented
-      };
-
-      inline bool operator!=(const ListIterator&) const {
-          std::abort(); // Not implemented
-      };
-
-      inline reference_type operator*() const {
-          std::abort(); // Not implemented
-      };
-
-      ListIterator& operator++() {
-          std::abort(); // Not implemented
-      };
-
-      ListIterator operator++(int) {
-          std::abort(); // Not implemented
-      };
-
-      ListIterator& operator--() {
-          std::abort(); // Not implemented
-      };
-
-      ListIterator operator--(int) {
-          std::abort(); // Not implemented
-      };
-
-      /*The overload of operator -> must either return a raw pointer, 
-      or return an object (by reference or by value) for which 
-      operator -> is in turn overloaded.*/
-      inline pointer_type operator->() const {
-          std::abort(); // Not implemented
-      };
-
-  private:
-      ListIterator(const Node*) {
-          // Not implemented
-      }
-  private:
-      Node* current;
-  };
+        Node(const T& data) : data(data), next(nullptr), prev(nullptr) {
+        }
+        Node() : data(), next(nullptr), prev(nullptr) {
+        }
+    };
 
 public:
-  List() {
-    // Not implemented
-  }
+    class ListIterator {
+        friend class List;
 
-  explicit List(size_t /*sz*/) {
-    // Not implemented
-  }
+    public:
+        using value_type = T;
+        using reference_type = value_type&;
+        using pointer_type = value_type*;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
 
-  List(const std::initializer_list<T>& /*values*/) {
-    // Not implemented
-  }
+        inline bool operator==(const ListIterator& other) const {
+            return this->current == other->current;
+        };
 
-  List(const List& /*other*/) {
-    // Not implemented
-  }
+        inline bool operator!=(const ListIterator& other) const {
+            return this->current != other.current;
+        };
 
-  List& operator=(const List& /*other*/) {
-    std::abort(); // Not implemented
-  }
+        inline reference_type operator*() const {
+            return this->current->data;
+        };
 
-  ListIterator Begin() const noexcept {
-    std::abort(); // Not implemented
-  }
+        ListIterator& operator++() {
+            this->current = this->current->next;
+            return *this;
+        };
 
-  ListIterator End() const noexcept {
-    std::abort(); // Not implemented
-  }
+        ListIterator operator++(int) {
+            ListIterator copy = *this;
+            this->current = this->current->next;
+            return copy;
+        };
 
-  inline T& Front() const {
-    std::abort(); // Not implemented
-  }
+        ListIterator& operator--() {
+            this->current = this->current->prev;
+            return *this;
+        };
 
-  inline T& Back() const {
-    std::abort(); // Not implemented
-  }
+        ListIterator operator--(int) {
+            ListIterator copy = *this;
+            this->current = this->current->prev;
+            return copy;
+        };
 
-  inline bool IsEmpty() const noexcept {
-    std::abort(); // Not implemented
-  }
+        inline pointer_type operator->() const {
+            return current->data;
+        };
 
-  inline size_t Size() const noexcept {
-    std::abort(); // Not implemented
-  }
+    private:
+        ListIterator(Node* current) : current(current) {
+        }
 
-  void Swap(List& /*a*/) {
-    // Not implemented
-  }
+    private:
+        Node* current;
+    };
 
-  ListIterator Find(const T& /*value*/) const {
-    std::abort(); // Not implemented
-  }
+public:
+    List() : sz(0) {
+        this->head = new Node();
+        this->last = this->head;
+    }
 
-  void Erase(ListIterator /*pos*/) {
-    // Not implemented
-  }
+    explicit List(size_t sz) {
 
-  void Insert(ListIterator /*pos*/, const T& /*value*/) {
-    // Not implemented
-  }
+        this->head = new Node();
+        this->last = this->head;
 
-  void Clear() noexcept {
-    // Not implemented
-  }
+        for (size_t i = 0; i < sz; ++i) {
+            this->head->prev = new Node();
+            this->head->prev->next = this->head;
+            this->head = this->head->prev;
+        }
 
-  void PushBack(const T& /*value*/) {
-    // Not implemented
-  }
+        this->sz = sz;
+    }
 
-  void PushFront(const T& /*value*/) {
-    // Not implemented
-  }
+    List(const std::initializer_list<T>& values) : sz(0) {
 
-  void PopBack() {
-    // Not implemented
-  }
+        this->head = new Node();
+        this->last = this->head;
 
-  void PopFront() {
-    // Not implemented
-  }
+        for (auto it = values.end(); it != values.begin();) {
+            --it;
+            this->head->prev = new Node(*it);
+            this->head->prev->next = this->head;
+            this->head = this->head->prev;
+        }
 
-  ~List() {
-    // Not implemented
-  }
+        this->sz = values.size();
+    }
+
+    List(const List& other) : sz(0) {
+
+        this->head = new Node();
+        this->last = this->head;
+
+        Node* t = other.head;
+
+        while (t != other.last) {
+            PushBack(t->data);
+            t = t->next;
+        }
+
+        this->sz = other.sz;
+    }
+
+    List& operator=(const List& other) {
+        List new_list(other);
+        Swap(new_list);
+        return *this;
+    }
+
+    ListIterator Begin() const noexcept {
+        return ListIterator(this->head);
+    }
+
+    ListIterator End() const noexcept {
+        return ListIterator(this->last);
+    }
+
+    inline T& Front() const {
+        return this->head->data;
+    }
+
+    inline T& Back() const {
+        return this->last->prev->data;
+    }
+
+    inline bool IsEmpty() const noexcept {
+        return this->head == this->last;
+    }
+
+    inline size_t Size() const noexcept {
+        return this->sz;
+    }
+
+    void Swap(List& l) {
+        std::swap(this->head, l.head);
+        std::swap(this->last, l.last);
+        std::swap(this->sz, l.sz);
+    }
+
+    ListIterator Find(const T& value) const {
+
+        ListIterator it(this->head);
+
+        while (it != End()) {
+            if (it.current->data == value) {
+                return it;
+            }
+            ++it;
+        }
+
+        return it;
+    }
+
+    void Erase(ListIterator pos) {
+
+        if (pos.current == this->head) {
+            this->head = this->head->next;
+            this->head->prev = nullptr;
+            delete pos.current;
+            --sz;
+            return;
+        }
+
+        pos.current->prev->next = pos.current->next;
+        pos.current->next->prev = pos.current->prev;
+        delete pos.current;
+        --sz;
+    }
+
+    void Insert(ListIterator pos, const T& value) {
+        Node* nd = new Node(value);
+
+        if (pos.current == this->head) {
+            this->head->prev = nd;
+            nd->next = this->head;
+            this->head = nd;
+            ++sz;
+            return;
+        }
+
+        if (pos.current == this->last) {
+            this->last->prev = nd;
+            nd->next = this->last;
+            ++sz;
+            return;
+        }
+
+        pos.current->prev->next = nd;
+        nd->prev = pos.current->prev;
+        pos.current->prev = nd;
+        nd->next = pos.current;
+
+        ++sz;
+    }
+
+    void Clear() noexcept {
+        while (this->sz) {
+            PopFront();
+        }
+    }
+
+    void PushBack(const T& value) {
+        Node* next = new Node(value);
+
+        if (this->sz == 0) {
+            this->head = next;
+            next->next = this->last;
+            this->last->prev = this->head;
+            ++sz;
+            return;
+        }
+
+        next->prev = this->last->prev;
+        next->next = this->last;
+        this->last->prev->next = next;
+        this->last->prev = next;
+
+        ++sz;
+    }
+
+    void PushFront(const T& value) {
+        Node* prev = new Node(value);
+        this->head->prev = prev;
+        this->head->prev->next = this->head;
+        this->head = this->head->prev;
+        ++sz;
+    }
+
+    void PopBack() {
+        if (IsEmpty()) {
+            throw ListIsEmptyException("ListIsEmpty");
+        }
+
+        --sz;
+
+        Node* prevNode = this->last->prev;
+        prevNode->prev->next = this->last;
+        this->last->prev = prevNode->prev;
+        delete prevNode;
+    }
+
+    void PopFront() {
+
+        if (IsEmpty()) {
+            throw ListIsEmptyException("ListIsEmpty");
+        }
+
+        Node* temp = this->head;
+
+        this->head = this->head->next;
+        delete temp;
+
+        this->head->prev = nullptr;
+
+        --sz;
+    }
+
+    ~List() {
+        Clear();
+        delete this->last;
+    }
 
 private:
-  /*???*/
+    size_t sz;
+    Node* head;
+    Node* last;
 };
 
-
 namespace std {
-  // Global swap overloading
-  template <typename T>
-  void swap(List<T>& a, List<T>& b) {
+// Global swap overloading
+template <typename T>
+void swap(List<T>& a, List<T>& b) {
     a.Swap(b);
-  }
 }
+}  // namespace std
