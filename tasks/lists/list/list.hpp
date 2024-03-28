@@ -34,7 +34,7 @@ public:
         friend class List;
 
     public:
-        // NOLINTNEXTLINE
+        // NOLINTNEXT_LINE
         using ValueType = T;
         using ReferenceType = ValueType&;
         using PointerType = ValueType*;
@@ -54,24 +54,24 @@ public:
         };
 
         ListIterator& operator++() {
-            this->current_ = this->current_->next;
+            this->current_ = this->current_->next_;
             return *this;
         };
 
         ListIterator operator++(int) {
             ListIterator copy = *this;
-            this->current_ = this->current_->next;
+            this->current_ = this->current_->next_;
             return copy;
         };
 
         ListIterator& operator--() {
-            this->current_ = this->current_->prev;
+            this->current_ = this->current_->prev_;
             return *this;
         };
 
         ListIterator operator--(int) {
             ListIterator copy = *this;
-            this->current_ = this->current_->prev;
+            this->current_ = this->current_->prev_;
             return copy;
         };
 
@@ -99,9 +99,9 @@ public:
         this->last_ = this->head_;
 
         for (size_t i = 0; i < sz; ++i) {
-            this->head_->prev = new Node();
-            this->head_->prev->next = this->head_;
-            this->head_ = this->head_->prev;
+            this->head_->prev_ = new Node();
+            this->head_->prev_->next_ = this->head_;
+            this->head_ = this->head_->prev_;
         }
 
         this->sz_ = sz;
@@ -114,9 +114,9 @@ public:
 
         for (auto it = values.end(); it != values.begin();) {
             --it;
-            this->head_->prev = new Node(*it);
-            this->head_->prev->next = this->head_;
-            this->head_ = this->head_->prev;
+            this->head_->prev_ = new Node(*it);
+            this->head_->prev_->next_ = this->head_;
+            this->head_ = this->head_->prev_;
         }
 
         this->sz_ = values.size();
@@ -156,7 +156,7 @@ public:
     }
 
     inline T& Back() const {
-        return this->last_->prev->data;
+        return this->last_->prev_->data;
     }
 
     inline bool IsEmpty() const noexcept {
@@ -190,15 +190,15 @@ public:
     void Erase(ListIterator pos) {
 
         if (pos.current_ == this->head_) {
-            this->head_ = this->head_->next;
-            this->head_->prev = nullptr;
+            this->head_ = this->head_->next_;
+            this->head_->prev_ = nullptr;
             delete pos.current_;
             --sz_;
             return;
         }
 
-        pos.current_->prev->next = pos.current_->next;
-        pos.current_->next->prev = pos.current_->prev;
+        pos.current_->prev_->next_ = pos.current_->next_;
+        pos.current_->next_->prev_ = pos.current_->prev_;
         delete pos.current_;
         --sz_;
     }
@@ -207,7 +207,7 @@ public:
         Node* nd = new Node(value);
 
         if (pos.current_ == this->head_) {
-            this->head_->prev = nd;
+            this->head_->prev_ = nd;
             nd->next_ = this->head_;
             this->head_ = nd;
             ++sz_;
@@ -215,15 +215,15 @@ public:
         }
 
         if (pos.current_ == this->last_) {
-            this->last_->prev = nd;
+            this->last_->prev_ = nd;
             nd->next_ = this->last_;
             ++sz_;
             return;
         }
 
-        pos.current_->prev->next = nd;
-        nd->prev_ = pos.current_->prev;
-        pos.current_->prev = nd;
+        pos.current_->prev_->next_ = nd;
+        nd->prev_ = pos.current_->prev_;
+        pos.current_->prev_ = nd;
         nd->next_ = pos.current_;
 
         ++sz_;
@@ -236,29 +236,29 @@ public:
     }
 
     void PushBack(const T& value) {
-        Node* next = new Node(value);
+        Node* next_ = new Node(value);
 
         if (this->sz_ == 0) {
-            this->head_ = next;
-            next->next_ = this->last_;
-            this->last_->prev = this->head_;
+            this->head_ = next_;
+            next_->next_ = this->last_;
+            this->last_->prev_ = this->head_;
             ++sz_;
             return;
         }
 
-        next->prev_ = this->last_->prev;
-        next->next_ = this->last_;
-        this->last_->prev->next = next;
-        this->last_->prev = next;
+        next_->prev_ = this->last_->prev_;
+        next_->next_ = this->last_;
+        this->last_->prev_->next_ = next_;
+        this->last_->prev_ = next_;
 
         ++sz_;
     }
 
     void PushFront(const T& value) {
-        Node* prev = new Node(value);
-        this->head_->prev = prev;
-        this->head_->prev->next = this->head_;
-        this->head_ = this->head_->prev;
+        Node* prev_ = new Node(value);
+        this->head_->prev_ = prev_;
+        this->head_->prev_->next_ = this->head_;
+        this->head_ = this->head_->prev_;
         ++sz_;
     }
 
@@ -269,9 +269,9 @@ public:
 
         --sz_;
 
-        Node* prev_node = this->last_->prev;
-        prev_node->prev_->next = this->last_;
-        this->last_->prev = prev_node->prev_;
+        Node* prev_node = this->last_->prev_;
+        prev_node->prev_->next_ = this->last_;
+        this->last_->prev_ = prev_node->prev_;
         delete prev_node;
     }
 
@@ -283,10 +283,10 @@ public:
 
         Node* temp = this->head_;
 
-        this->head_ = this->head_->next;
+        this->head_ = this->head_->next_;
         delete temp;
 
-        this->head_->prev = nullptr;
+        this->head_->prev_ = nullptr;
 
         --sz_;
     }
