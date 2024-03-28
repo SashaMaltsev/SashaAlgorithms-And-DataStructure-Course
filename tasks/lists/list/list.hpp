@@ -36,8 +36,8 @@ public:
     public:
         // NOLINTNEXTLINE
         using ValueType = T;
-        using ReferenceType = value_type&;
-        using PointerType = value_type*;
+        using ReferenceType = ValueType&;
+        using PointerType = ValueType*;
         using DifferenceType = std::ptrdiff_t;
         using IteratorCategory = std::bidirectional_iterator_tag;
 
@@ -49,7 +49,7 @@ public:
             return this->current_ != other.current_;
         };
 
-        inline reference_type operator*() const {
+        inline ReferenceType operator*() const {
             return this->current_->data;
         };
 
@@ -75,7 +75,7 @@ public:
             return copy;
         };
 
-        inline pointer_type operator->() const {
+        inline PointerType operator->() const {
             return current_->data_;
         };
 
