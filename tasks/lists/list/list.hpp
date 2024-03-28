@@ -18,14 +18,14 @@ private:
         friend class List;
 
     private:
-        T data;
-        Node* next;
-        Node* prev;
+        T data_;
+        Node* next_;
+        Node* prev_;
 
     public:
-        Node(const T& data) : data(data), next(nullptr), prev(nullptr) {
+        explicit Node(const T& data) : data_(data), next_(nullptr), prev_(nullptr) {
         }
-        Node() : data(), next(nullptr), prev(nullptr) {
+        Node() : data_(), next_(nullptr), prev_(nullptr) {
         }
     };
 
@@ -34,106 +34,106 @@ public:
         friend class List;
 
     public:
-        using value_type = T;
-        using reference_type = value_type&;
-        using pointer_type = value_type*;
-        using difference_type = std::ptrdiff_t;
-        using iterator_category = std::bidirectional_iterator_tag;
+        using ValueType = T;
+        using ReferenceType = value_type&;
+        using PointerType = value_type*;
+        using DifferenceType = std::ptrdiff_t;
+        using IteratorCategory = std::bidirectional_iterator_tag;
 
         inline bool operator==(const ListIterator& other) const {
-            return this->current == other->current;
+            return this->current_ == other->current;
         };
 
         inline bool operator!=(const ListIterator& other) const {
-            return this->current != other.current;
+            return this->current_ != other.current_;
         };
 
         inline reference_type operator*() const {
-            return this->current->data;
+            return this->current_->data;
         };
 
         ListIterator& operator++() {
-            this->current = this->current->next;
+            this->current_ = this->current_->next;
             return *this;
         };
 
         ListIterator operator++(int) {
             ListIterator copy = *this;
-            this->current = this->current->next;
+            this->current_ = this->current_->next;
             return copy;
         };
 
         ListIterator& operator--() {
-            this->current = this->current->prev;
+            this->current_ = this->current_->prev;
             return *this;
         };
 
         ListIterator operator--(int) {
             ListIterator copy = *this;
-            this->current = this->current->prev;
+            this->current_ = this->current_->prev;
             return copy;
         };
 
         inline pointer_type operator->() const {
-            return current->data;
+            return current_->data_;
         };
 
     private:
-        ListIterator(Node* current) : current(current) {
+        explicit ListIterator(Node* current) : current_(current) {
         }
 
     private:
-        Node* current;
+        Node* current_;
     };
 
 public:
-    List() : sz(0) {
-        this->head = new Node();
-        this->last = this->head;
+    List() : sz_(0) {
+        this->head_ = new Node();
+        this->last_ = this->head_;
     }
 
     explicit List(size_t sz) {
 
-        this->head = new Node();
-        this->last = this->head;
+        this->head_ = new Node();
+        this->last_ = this->head_;
 
         for (size_t i = 0; i < sz; ++i) {
-            this->head->prev = new Node();
-            this->head->prev->next = this->head;
-            this->head = this->head->prev;
+            this->head_->prev = new Node();
+            this->head_->prev->next = this->head_;
+            this->head_ = this->head_->prev;
         }
 
-        this->sz = sz;
+        this->sz_ = sz;
     }
 
-    List(const std::initializer_list<T>& values) : sz(0) {
+    List(const std::initializer_list<T>& values) : sz_(0) {
 
-        this->head = new Node();
-        this->last = this->head;
+        this->head_ = new Node();
+        this->last_ = this->head_;
 
         for (auto it = values.end(); it != values.begin();) {
             --it;
-            this->head->prev = new Node(*it);
-            this->head->prev->next = this->head;
-            this->head = this->head->prev;
+            this->head_->prev = new Node(*it);
+            this->head_->prev->next = this->head_;
+            this->head_ = this->head_->prev;
         }
 
-        this->sz = values.size();
+        this->sz_ = values.size();
     }
 
-    List(const List& other) : sz(0) {
+    List(const List& other) : sz_(0) {
 
-        this->head = new Node();
-        this->last = this->head;
+        this->head_ = new Node();
+        this->last_ = this->head_;
 
-        Node* t = other.head;
+        Node* t = other.head_;
 
-        while (t != other.last) {
-            PushBack(t->data);
-            t = t->next;
+        while (t != other.last_) {
+            PushBack(t->data_);
+            t = t->next_;
         }
 
-        this->sz = other.sz;
+        this->sz_ = other.sz_;
     }
 
     List& operator=(const List& other) {
@@ -143,41 +143,41 @@ public:
     }
 
     ListIterator Begin() const noexcept {
-        return ListIterator(this->head);
+        return ListIterator(this->head_);
     }
 
     ListIterator End() const noexcept {
-        return ListIterator(this->last);
+        return ListIterator(this->last_);
     }
 
     inline T& Front() const {
-        return this->head->data;
+        return this->head_->data;
     }
 
     inline T& Back() const {
-        return this->last->prev->data;
+        return this->last_->prev->data;
     }
 
     inline bool IsEmpty() const noexcept {
-        return this->head == this->last;
+        return this->head_ == this->last_;
     }
 
     inline size_t Size() const noexcept {
-        return this->sz;
+        return this->sz_;
     }
 
     void Swap(List& l) {
-        std::swap(this->head, l.head);
-        std::swap(this->last, l.last);
-        std::swap(this->sz, l.sz);
+        std::swap(this->head_, l.head_);
+        std::swap(this->last_, l.last_);
+        std::swap(this->sz_, l.sz_);
     }
 
     ListIterator Find(const T& value) const {
 
-        ListIterator it(this->head);
+        ListIterator it(this->head_);
 
         while (it != End()) {
-            if (it.current->data == value) {
+            if (it.current_->data == value) {
                 return it;
             }
             ++it;
@@ -188,48 +188,48 @@ public:
 
     void Erase(ListIterator pos) {
 
-        if (pos.current == this->head) {
-            this->head = this->head->next;
-            this->head->prev = nullptr;
-            delete pos.current;
-            --sz;
+        if (pos.current_ == this->head_) {
+            this->head_ = this->head_->next;
+            this->head_->prev = nullptr;
+            delete pos.current_;
+            --sz_;
             return;
         }
 
-        pos.current->prev->next = pos.current->next;
-        pos.current->next->prev = pos.current->prev;
-        delete pos.current;
-        --sz;
+        pos.current_->prev->next = pos.current_->next;
+        pos.current_->next->prev = pos.current_->prev;
+        delete pos.current_;
+        --sz_;
     }
 
     void Insert(ListIterator pos, const T& value) {
         Node* nd = new Node(value);
 
-        if (pos.current == this->head) {
-            this->head->prev = nd;
-            nd->next = this->head;
-            this->head = nd;
-            ++sz;
+        if (pos.current_ == this->head_) {
+            this->head_->prev = nd;
+            nd->next_ = this->head_;
+            this->head_ = nd;
+            ++sz_;
             return;
         }
 
-        if (pos.current == this->last) {
-            this->last->prev = nd;
-            nd->next = this->last;
-            ++sz;
+        if (pos.current_ == this->last_) {
+            this->last_->prev = nd;
+            nd->next_ = this->last_;
+            ++sz_;
             return;
         }
 
-        pos.current->prev->next = nd;
-        nd->prev = pos.current->prev;
-        pos.current->prev = nd;
-        nd->next = pos.current;
+        pos.current_->prev->next = nd;
+        nd->prev_ = pos.current_->prev;
+        pos.current_->prev = nd;
+        nd->next_ = pos.current_;
 
-        ++sz;
+        ++sz_;
     }
 
     void Clear() noexcept {
-        while (this->sz) {
+        while (this->sz_) {
             PopFront();
         }
     }
@@ -237,28 +237,28 @@ public:
     void PushBack(const T& value) {
         Node* next = new Node(value);
 
-        if (this->sz == 0) {
-            this->head = next;
-            next->next = this->last;
-            this->last->prev = this->head;
-            ++sz;
+        if (this->sz_ == 0) {
+            this->head_ = next;
+            next->next_ = this->last_;
+            this->last_->prev = this->head_;
+            ++sz_;
             return;
         }
 
-        next->prev = this->last->prev;
-        next->next = this->last;
-        this->last->prev->next = next;
-        this->last->prev = next;
+        next->prev_ = this->last_->prev;
+        next->next_ = this->last_;
+        this->last_->prev->next = next;
+        this->last_->prev = next;
 
-        ++sz;
+        ++sz_;
     }
 
     void PushFront(const T& value) {
         Node* prev = new Node(value);
-        this->head->prev = prev;
-        this->head->prev->next = this->head;
-        this->head = this->head->prev;
-        ++sz;
+        this->head_->prev = prev;
+        this->head_->prev->next = this->head_;
+        this->head_ = this->head_->prev;
+        ++sz_;
     }
 
     void PopBack() {
@@ -266,12 +266,12 @@ public:
             throw ListIsEmptyException("ListIsEmpty");
         }
 
-        --sz;
+        --sz_;
 
-        Node* prevNode = this->last->prev;
-        prevNode->prev->next = this->last;
-        this->last->prev = prevNode->prev;
-        delete prevNode;
+        Node* prev_node = this->last_->prev;
+        prev_node->prev_->next = this->last_;
+        this->last_->prev = prev_node->prev_;
+        delete prev_node;
     }
 
     void PopFront() {
@@ -280,31 +280,31 @@ public:
             throw ListIsEmptyException("ListIsEmpty");
         }
 
-        Node* temp = this->head;
+        Node* temp = this->head_;
 
-        this->head = this->head->next;
+        this->head_ = this->head_->next;
         delete temp;
 
-        this->head->prev = nullptr;
+        this->head_->prev = nullptr;
 
-        --sz;
+        --sz_;
     }
 
     ~List() {
         Clear();
-        delete this->last;
+        delete this->last_;
     }
 
 private:
-    size_t sz;
-    Node* head;
-    Node* last;
+    size_t sz_;
+    Node* head_;
+    Node* last_;
 };
 
 namespace std {
 // Global swap overloading
 template <typename T>
-void swap(List<T>& a, List<T>& b) {
+void Swap(List<T>& a, List<T>& b) {
     a.Swap(b);
 }
 }  // namespace std
