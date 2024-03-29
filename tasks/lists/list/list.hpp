@@ -23,7 +23,7 @@ private:
         Node* prev_;
 
     public:
-        Node(const T& data) : data_(data), next_(nullptr), prev_(nullptr) {
+        explicit Node(const T& data) : data_(data), next_(nullptr), prev_(nullptr) {
         }
         Node() : data_(), next_(nullptr), prev_(nullptr) {
         }
@@ -36,9 +36,13 @@ public:
     public:
         // NOLINTNEXTLINE
         using value_type = T;
+        // NOLINTNEXTLINE
         using reference_type = value_type&;
+        // NOLINTNEXTLINE
         using pointer_type = value_type*;
+        // NOLINTNEXTLINE
         using difference_type = std::ptrdiff_t;
+        // NOLINTNEXTLINE
         using iterator_category = std::bidirectional_iterator_tag;
 
         inline bool operator==(const ListIterator& other) const {
@@ -255,8 +259,8 @@ public:
     }
 
     void PushFront(const T& value) {
-        Node* prev_ = new Node(value);
-        this->head_->prev_ = prev_;
+        Node* prev = new Node(value);
+        this->head_->prev_ = prev;
         this->head_->prev_->next_ = this->head_;
         this->head_ = this->head_->prev_;
         ++sz_;
@@ -302,9 +306,11 @@ private:
     Node* last_;
 };
 
+
 namespace std {
 // Global swap overloading
 template <typename T>
+// NOLINTNEXTLINE
 void swap(List<T>& a, List<T>& b) {
     a.Swap(b);
 }
