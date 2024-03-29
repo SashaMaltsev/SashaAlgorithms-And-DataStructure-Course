@@ -84,7 +84,7 @@ public:
         };
 
     private:
-        ListIterator(Node* current) : current_(current) {
+        explicit ListIterator(Node* current) : current_(current) {
         }
 
     private:
