@@ -23,7 +23,7 @@ private:
         Node* prev_;
 
     public:
-        explicit Node(const T& data) : data_(data), next_(nullptr), prev_(nullptr) {
+        Node(const T& data) : data_(data), next_(nullptr), prev_(nullptr) {
         }
         Node() : data_(), next_(nullptr), prev_(nullptr) {
         }
@@ -34,23 +34,23 @@ public:
         friend class List;
 
     public:
-        // NOLINTNEXT_LINE
-        using ValueType = T;
-        using ReferenceType = ValueType&;
-        using PointerType = ValueType*;
-        using DifferenceType = std::ptrdiff_t;
-        using IteratorCategory = std::bidirectional_iterator_tag;
+        // NOLINTNEXTLINE
+        using value_type = T;
+        using reference_type = value_type&;
+        using pointer_type = value_type*;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
 
         inline bool operator==(const ListIterator& other) const {
-            return this->current_ == other->current;
+            return this->current_ == other.current_;
         };
 
         inline bool operator!=(const ListIterator& other) const {
             return this->current_ != other.current_;
         };
 
-        inline ReferenceType operator*() const {
-            return this->current_->data;
+        inline reference_type operator*() const {
+            return this->current_->data_;
         };
 
         ListIterator& operator++() {
@@ -75,12 +75,12 @@ public:
             return copy;
         };
 
-        inline PointerType operator->() const {
+        inline pointer_type operator->() const {
             return current_->data_;
         };
 
     private:
-        explicit ListIterator(Node* current) : current_(current) {
+        ListIterator(Node* current) : current_(current) {
         }
 
     private:
@@ -152,11 +152,11 @@ public:
     }
 
     inline T& Front() const {
-        return this->head_->data;
+        return this->head_->data_;
     }
 
     inline T& Back() const {
-        return this->last_->prev_->data;
+        return this->last_->prev_->data_;
     }
 
     inline bool IsEmpty() const noexcept {
@@ -178,7 +178,7 @@ public:
         ListIterator it(this->head_);
 
         while (it != End()) {
-            if (it.current_->data == value) {
+            if (it.current_->data_ == value) {
                 return it;
             }
             ++it;
@@ -236,20 +236,20 @@ public:
     }
 
     void PushBack(const T& value) {
-        Node* next_ = new Node(value);
+        Node* next = new Node(value);
 
         if (this->sz_ == 0) {
-            this->head_ = next_;
-            next_->next_ = this->last_;
+            this->head_ = next;
+            next->next_ = this->last_;
             this->last_->prev_ = this->head_;
             ++sz_;
             return;
         }
 
-        next_->prev_ = this->last_->prev_;
-        next_->next_ = this->last_;
-        this->last_->prev_->next_ = next_;
-        this->last_->prev_ = next_;
+        next->prev_ = this->last_->prev_;
+        next->next_ = this->last_;
+        this->last_->prev_->next_ = next;
+        this->last_->prev_ = next;
 
         ++sz_;
     }
@@ -305,7 +305,7 @@ private:
 namespace std {
 // Global swap overloading
 template <typename T>
-void Swap(List<T>& a, List<T>& b) {
+void swap(List<T>& a, List<T>& b) {
     a.Swap(b);
 }
 }  // namespace std
