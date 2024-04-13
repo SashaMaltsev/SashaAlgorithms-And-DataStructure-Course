@@ -306,7 +306,6 @@ private:
     Node* last_;
 };
 
-
 namespace std {
 // Global swap overloading
 template <typename T>
