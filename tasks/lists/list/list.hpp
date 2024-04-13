@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fmt/core.h>
+// #include <fmt/core.h>
 
 #include <cstddef>
 #include <cstdlib>
@@ -269,6 +269,12 @@ public:
     void PopBack() {
         if (IsEmpty()) {
             throw ListIsEmptyException("ListIsEmpty");
+        }
+
+        if (this->sz_ == 1) {
+            delete this->head_;
+            --sz_;
+            return;
         }
 
         --sz_;
