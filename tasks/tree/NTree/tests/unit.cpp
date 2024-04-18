@@ -21,7 +21,7 @@ class FsTest: public testing::Test {
       fs.CreateFile("/mnt/c/Users/Sysoev/test3.txt", false);
       fs.CreateFile("/mnt/c/Users/test1.txt", false);
     }
-  
+
 public:
   filesystem::Fs fs;
 };
