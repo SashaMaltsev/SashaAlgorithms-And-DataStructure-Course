@@ -21,7 +21,7 @@ class FsTest: public testing::Test {
       fs.CreateFile("/mnt/c/Users/Sysoev/test3.txt", false);
       fs.CreateFile("/mnt/c/Users/test1.txt", false);
     }
-
+  
 public:
   filesystem::Fs fs;
 };
@@ -139,7 +139,7 @@ TEST(EmptyFsTest, RemoveNotExistFile) {
 
 
 TEST_F(FsTest, SimpleFind) {
-  fs.FindFile("text3.txt");
+  fs.FindFile("test3.txt");
   // expect: 
   // /mnt/c/Users/Sysoev/VSCodeProjects/test3.txt
   // /mnt/c/Users/Sysoev/test3.txt
