@@ -28,6 +28,58 @@ private:
         }
     };
 
+    void LKP(Node* nd, std::vector<std::pair<const Key, Value>>& res) const {
+
+        if (nd->left_ != nullptr) {
+            LKP(nd->left_, res);
+        }
+
+        res.push_back(std::make_pair(nd->key_, nd->value_));
+
+        if (nd->right_ != nullptr) {
+            LKP(nd->right_, res);
+        }
+    }
+
+    void PKL(Node* nd, std::vector<std::pair<const Key, Value>>& res) const {
+
+        if (nd->right_ != nullptr) {
+            PKL(nd->right_, res);
+        }
+
+        res.push_back(std::make_pair(nd->key_, nd->value_));
+
+        if (nd->left_ != nullptr) {
+            PKL(nd->left_, res);
+        }
+    }
+
+    void Del(Node* nd, Node* prev) {
+
+        if (IsEmpty()) {
+            return;
+        }
+
+        if (nd->left_ != nullptr) {
+            Del(nd->left_, nd);
+        }
+
+        if (nd->right_ != nullptr) {
+            Del(nd->right_, nd);
+        }
+
+        if (prev != nullptr) {
+            if (prev->left_ == nd) {
+                prev->left_ = nullptr;
+            } else {
+                prev->right_ = nullptr;
+            }
+        }
+
+        delete nd;
+        --sz_;
+    }
+    
 public:
     Map() : root_(nullptr), sz_(0) {
     }
@@ -96,32 +148,6 @@ public:
             PKL(this->root_, res);
         }
         return res;
-    }
-
-    void LKP(Node* nd, std::vector<std::pair<const Key, Value>>& res) const {
-
-        if (nd->left_ != nullptr) {
-            LKP(nd->left_, res);
-        }
-
-        res.push_back(std::make_pair(nd->key_, nd->value_));
-
-        if (nd->right_ != nullptr) {
-            LKP(nd->right_, res);
-        }
-    }
-
-    void PKL(Node* nd, std::vector<std::pair<const Key, Value>>& res) const {
-
-        if (nd->right_ != nullptr) {
-            PKL(nd->right_, res);
-        }
-
-        res.push_back(std::make_pair(nd->key_, nd->value_));
-
-        if (nd->left_ != nullptr) {
-            PKL(nd->left_, res);
-        }
     }
 
     void Insert(const std::pair<const Key, Value>& val) {
@@ -267,32 +293,6 @@ public:
         }
 
         Del(this->root_, nullptr);
-    }
-
-    void Del(Node* nd, Node* prev) {
-
-        if (IsEmpty()) {
-            return;
-        }
-
-        if (nd->left_ != nullptr) {
-            Del(nd->left_, nd);
-        }
-
-        if (nd->right_ != nullptr) {
-            Del(nd->right_, nd);
-        }
-
-        if (prev != nullptr) {
-            if (prev->left_ == nd) {
-                prev->left_ = nullptr;
-            } else {
-                prev->right_ = nullptr;
-            }
-        }
-
-        delete nd;
-        --sz_;
     }
 
     bool Find(const Key& key) const {
