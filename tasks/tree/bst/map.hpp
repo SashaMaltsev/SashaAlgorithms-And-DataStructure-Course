@@ -79,7 +79,7 @@ private:
         delete nd;
         --sz_;
     }
-    
+
 public:
     Map() : root_(nullptr), sz_(0) {
     }
