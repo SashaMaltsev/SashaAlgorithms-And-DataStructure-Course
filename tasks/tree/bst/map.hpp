@@ -152,7 +152,6 @@ public:
                     ++sz_;
                     return;
                 }
-                
                 temp = temp->right_;
             }
         }
