@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fmt/core.h>
+
 #include <cstdlib>
 #include <functional>
 #include <iterator>
@@ -7,8 +9,6 @@
 #include <vector>
 
 #include "exceptions.hpp"
-
-#include <fmt/core.h>
 
 template <typename Key, typename Value, typename Compare = std::less<Key>>
 class Map {
