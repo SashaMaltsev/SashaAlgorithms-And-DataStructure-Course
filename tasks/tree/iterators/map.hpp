@@ -1,12 +1,14 @@
 #pragma once
 
+#include <fmt/core.h>
+
 #include <cstdlib>
 #include <functional>
 #include <iterator>
 #include <utility>
 #include <vector>
 
-#include "../detail/exceptions.hpp"
+#include "exceptions.hpp"
 
 template <typename Key, typename Value, typename Compare = std::less<Key>>
 class Map {
@@ -220,7 +222,7 @@ public:
 
     void Erase(const Key& key) {
         if (IsEmpty()) {
-            throw filesystem::exceptions::TreeIsEmptyException("TreeIsEmpty");
+            throw TreeIsEmptyException("TreeIsEmpty");
         }
 
         Node* prev = this->root_;
@@ -230,14 +232,14 @@ public:
 
             if (comp_(key, curr->data_.first)) {
                 if (curr->left_ == nullptr) {
-                    throw filesystem::exceptions::TreeIsEmptyException("TreeIsEmpty");
+                    throw TreeIsEmptyException("TreeIsEmpty");
                 }
                 prev = curr;
                 curr = curr->left_;
 
             } else {
                 if (curr->is_right_link_) {
-                    throw filesystem::exceptions::TreeIsEmptyException("TreeIsEmpty");
+                    throw TreeIsEmptyException("TreeIsEmpty");
                 }
                 prev = curr;
                 curr = curr->right_;
