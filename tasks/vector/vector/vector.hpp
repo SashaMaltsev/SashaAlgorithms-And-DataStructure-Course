@@ -1,12 +1,16 @@
 #pragma once
 
-#include <fmt/core.h>
-
 #include <initializer_list>
+#include <memory>
 #include <utility>
 
-template <typename T>
+#include "allocator.hpp"
+
+template <typename T, typename Allocator = Allocator<T>>
 class Vector {
+private:
+    void Swap(Vector& l);
+
 public:
     Vector();
 
@@ -14,7 +18,11 @@ public:
 
     Vector(const Vector& other);
 
+    Vector& operator=(const Vector& other);
+
     Vector(Vector&& other) noexcept;
+
+    Vector& operator=(Vector&& other);
 
     Vector(std::initializer_list<T> init);
 
@@ -40,7 +48,9 @@ public:
 
     void Erase(size_t begin_pos, size_t end_pos);
 
-    void PushBack(T value);
+    void PushBack(const T& value);
+
+    void PushBack(T&& value);
 
     template <class... Args>
     void EmplaceBack(Args&&... args);
@@ -52,5 +62,9 @@ public:
     ~Vector();
 
 private:
-    /*???*/
-}
+    T* data_;
+    size_t size_;
+    size_t capacity_;
+    Allocator allocator_;
+    void Destroy();
+};
