@@ -1,6 +1,6 @@
-#include "Deque/deque.hpp"
+#include "../deque/deque.hpp"
 
-template<typename T, typename Container = Deque<T>>
+template <typename T, typename Container = Deque<T>>
 class Stack : protected Container {
 public:
     Stack() = default;
@@ -12,7 +12,7 @@ public:
     void Push(T&& value);
 
     template <class... Args>
-    void Emplace(Args&& ... args);
+    void Emplace(Args&&... args);
 
     using Container::IsEmpty;
     using Container::Size;
@@ -21,9 +21,8 @@ public:
     ~Stack() = default;
 };
 
-
 template <typename T, typename Container>
-inline T &Stack<T, Container>::Top() const noexcept {
+inline T& Stack<T, Container>::Top() const noexcept {
     return Container::Back();
 }
 
@@ -39,7 +38,7 @@ inline void Stack<T, Container>::Push(T&& value) {
 
 template <typename T, typename Container>
 template <class... Args>
-inline void Stack<T, Container>::Emplace(Args&& ...args) {
+inline void Stack<T, Container>::Emplace(Args&&... args) {
     Container::EmplaceBack(args...);
 }
 
