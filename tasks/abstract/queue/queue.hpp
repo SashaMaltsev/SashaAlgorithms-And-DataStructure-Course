@@ -1,7 +1,6 @@
-#include "Deque/deque.hpp"
+#include "../deque/deque.hpp"
 
-
-template<typename T, typename Container = Deque<T>>
+template <typename T, typename Container = Deque<T>>
 class Queue : protected Container {
 public:
     Queue() = default;
@@ -12,16 +11,15 @@ public:
     void Push(T&& value);
 
     template <class... Args>
-    void Emplace(Args&& ... args);
+    void Emplace(Args&&... args);
 
+    using Container::Front;
     using Container::IsEmpty;
     using Container::Size;
     using Container::Swap;
-    using Container::Front;
 
     ~Queue() = default;
 };
-
 
 template <typename T, typename Container>
 inline void Queue<T, Container>::Push(const T& value) {
@@ -35,7 +33,7 @@ inline void Queue<T, Container>::Push(T&& value) {
 
 template <typename T, typename Container>
 template <class... Args>
-inline void Queue<T, Container>::Emplace(Args&& ...args) {
+inline void Queue<T, Container>::Emplace(Args&&... args) {
     Container::EmplaceBack(args...);
 }
 
