@@ -55,6 +55,11 @@ Array<T, Allocator>::Array() : start_(0), end_(0) {
 
 template<typename T, typename Allocator>
 Array<T, Allocator>::Array(const Array& other) : Vector<T, Allocator>(other), start_(other.start_), end_(other.end_) {
+    if (this->end_ < this->start_) {
+        for (size_t i = start_; i < this->Vector<T, Allocator>::capacity_; ++i) {
+            this->Vector<T, Allocator>::allocator_.construct(this->data_ + i, *(other.data_ + i));
+        }
+    }
 }
 
 template<typename T, typename Allocator>
