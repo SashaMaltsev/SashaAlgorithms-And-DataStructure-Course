@@ -11,7 +11,6 @@ protected:
     void Swap(Deque& l);
 
 public:
-
     Deque();
     Deque(Deque&& other);
     Deque(const Deque& other);
@@ -50,6 +49,7 @@ protected:
     Allocator allocator_;
 };
 
+#define CHUNK_SIZE 5
 
 template <typename T, typename Allocator>
 void Deque<T, Allocator>::Swap(Deque& d) {
@@ -61,21 +61,32 @@ void Deque<T, Allocator>::Swap(Deque& d) {
 }
 
 template <typename T, typename Allocator>
-Deque<T, Allocator>::Deque() : pointers_(), start_(0), size_(0), chunk_size_(5) {
+Deque<T, Allocator>::Deque() : pointers_(), start_(0), size_(0), chunk_size_(CHUNK_SIZE) {
 }
 
 template <typename T, typename Allocator>
-Deque<T, Allocator>::Deque(Deque&& other) : pointers_(std::move(other.pointers_)), start_(other.start_), size_(other.size_), chunk_size_(other.chunk_size_), allocator_() {
+Deque<T, Allocator>::Deque(Deque&& other)
+    : pointers_(std::move(other.pointers_)),
+      start_(other.start_),
+      size_(other.size_),
+      chunk_size_(other.chunk_size_),
+      allocator_() {
     other.start_ = 0;
     other.size_ = 0;
 }
 
 template <typename T, typename Allocator>
-Deque<T, Allocator>::Deque(const Deque& other) : pointers_(other.pointers_), start_(other.start_), size_(other.size_), chunk_size_(other.chunk_size_), allocator_() {
+Deque<T, Allocator>::Deque(const Deque& other)
+    : pointers_(other.pointers_),
+      start_(other.start_),
+      size_(other.size_),
+      chunk_size_(other.chunk_size_),
+      allocator_() {
 }
 
 template <typename T, typename Allocator>
-inline Deque<T, Allocator>::Deque(std::initializer_list<T> init) : pointers_(), start_(0), size_(0), chunk_size_(5), allocator_() {
+inline Deque<T, Allocator>::Deque(std::initializer_list<T> init)
+    : pointers_(), start_(0), size_(0), chunk_size_(CHUNK_SIZE), allocator_() {
 
     this->pointers_.Reserve((init.size() / this->chunk_size_) + 1);
 
@@ -184,7 +195,8 @@ void Deque<T, Allocator>::PopFront() {
 template <typename T, typename Allocator>
 void Deque<T, Allocator>::Clear() {
     for (size_t i = 0; i < this->size_; ++i) {
-        this->allocator_.destroy(this->pointers_[(i + this->start_) / this->chunk_size_] + ((i + this->start_) % this->chunk_size_));
+        this->allocator_.destroy(this->pointers_[(i + this->start_) / this->chunk_size_] +
+                                 ((i + this->start_) % this->chunk_size_));
     }
     this->start_ = 0;
     this->size_ = 0;
@@ -199,13 +211,15 @@ void Deque<T, Allocator>::EmplaceBack(Args&&... args) {
         this->pointers_.PushBack(this->allocator_.allocate(this->chunk_size_));
     }
 
-    this->allocator_.construct(this->pointers_[(this->size_ + this->start_) / this->chunk_size_] + (this->size_ + this->start_) % this->chunk_size_, std::forward<Args>(args)...);
+    this->allocator_.construct(this->pointers_[(this->size_ + this->start_) / this->chunk_size_] +
+                                   (this->size_ + this->start_) % this->chunk_size_,
+                               std::forward<Args>(args)...);
     ++size_;
 }
 
 template <typename T, typename Allocator>
 template <typename... Args>
-void Deque<T, Allocator>::EmplaceFront(Args&& ...args) {
+void Deque<T, Allocator>::EmplaceFront(Args&&... args) {
 
     if (this->start_ == 0) {
         this->pointers_.PushFront(this->allocator_.allocate(this->chunk_size_));
@@ -213,7 +227,8 @@ void Deque<T, Allocator>::EmplaceFront(Args&& ...args) {
     }
 
     --start_;
-    this->allocator_.construct(this->pointers_[(this->start_) / this->chunk_size_] + (this->start_) % this->chunk_size_, std::forward<Args>(args)...);
+    this->allocator_.construct(this->pointers_[(this->start_) / this->chunk_size_] + (this->start_) % this->chunk_size_,
+                               std::forward<Args>(args)...);
     ++size_;
 }
 
