@@ -291,6 +291,7 @@ TEST_F(MapTest, EraseNotExistingValue) {
   EXPECT_ANY_THROW({
     mp.Erase(-100);
   });
+}
 
 TEST_F(MapTest, CustomComparator) {
   struct Point {
