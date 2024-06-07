@@ -23,7 +23,7 @@ public:
     inline bool IsEmpty() const noexcept;
     inline T& Back() const noexcept;
     inline T& Front() const noexcept;
-    inline T& operator[](size_t pos) const noexcept;
+    inline T& operator[](size_t pos) const;
 
     inline void PushBack(const T& value);
     inline void PushBack(T&& value);
@@ -140,7 +140,7 @@ inline T& Deque<T, Allocator>::Front() const noexcept {
 }
 
 template <typename T, typename Allocator>
-inline T& Deque<T, Allocator>::operator[](size_t pos) const noexcept {
+inline T& Deque<T, Allocator>::operator[](size_t pos) const {
 
     if (this->size_ == 0) {
         throw DequeIsEmptyException("DequeIsEmpty");
