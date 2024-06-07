@@ -2,16 +2,27 @@
 
 namespace filesystem {
 
-    void File::Read(size_t /*bytes*/) const {
-        std::abort(); // Not implemented
-    }
+File::File() : content_() {
+}
 
-    void File::Write() {
-        // Not implemented
-    }
+File::File(std::string data) : content_(data) {
+}
 
-    void File::Append() {
-        // Not implemented
+void File::Read(size_t bytes) const {
+    if (bytes > this->content_.size()) {
+        bytes = this->content_.size();
     }
+    for (size_t i = 0; i < bytes; ++i) {
+        std::cout << (this->content_[i]);
+    }
+    std::cout << std::endl;
+}
 
-} // end namespace filesystem
+void File::Write(std::string data) {
+    this->content_ = data;
+}
+
+void File::Append(std::string data) {
+    this->content_ += data;
+}
+}  // end namespace filesystem

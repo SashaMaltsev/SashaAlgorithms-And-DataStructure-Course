@@ -1,21 +1,27 @@
 #pragma once
 
+#include <cstdint>
+#include <iostream>
 #include <string>
-
 
 namespace filesystem {
 
 class File {
+    friend class Fs;
+
 public:
-    void Read(size_t /*bytes*/) const;
+    File();
 
-    // overwrite
-    void Write();
+    explicit File(std::string data);
 
-    void Append();
+    void Read(size_t bytes = SIZE_MAX) const;
+
+    void Write(std::string data);
+
+    void Append(std::string data);
 
 private:
-    std::string content;
+    std::string content_;
 };
 
-} // end namespace filesystem
+}  // end namespace filesystem
